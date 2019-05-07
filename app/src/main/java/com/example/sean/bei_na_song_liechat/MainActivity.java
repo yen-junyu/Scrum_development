@@ -20,6 +20,7 @@ import com.bumptech.glide.Glide;
 import com.example.sean.bei_na_song_liechat.Fragments.ChatsFragment;
 import com.example.sean.bei_na_song_liechat.Fragments.ProfileFragment;
 import com.example.sean.bei_na_song_liechat.Fragments.UsersFragment;
+import com.example.sean.bei_na_song_liechat.Model.Chat;
 import com.example.sean.bei_na_song_liechat.Model.User;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -30,6 +31,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -74,7 +76,7 @@ public class MainActivity extends AppCompatActivity {
                     profile_image.setImageResource(R.mipmap.ic_launcher);
                 }
                 else{
-                    Glide.with(MainActivity.this).load(user.getImageURL()).into(profile_image);
+                    Glide.with(getApplicationContext()).load(user.getImageURL()).into(profile_image);
                 }
             }
 
@@ -87,17 +89,44 @@ public class MainActivity extends AppCompatActivity {
         //Layout which manage the page view.
         //that allows the user to flip left and right through pages of data.
         //Suppling an implementation of a PagerAdapter to generate the pages that the view shows.
-        TabLayout tabLayout = findViewById(R.id.tab_layout);
-        ViewPager viewPager = findViewById(R.id.view_pager);
-        ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager());
-        //Add Chat and Users Fragments.
-        viewPagerAdapter.addFragment(new ChatsFragment(), "Chats");
-        viewPagerAdapter.addFragment(new UsersFragment(), "Users");
-        viewPagerAdapter.addFragment(new ProfileFragment(), "Profile"); //Part.10 profile.
+        final TabLayout tabLayout = findViewById(R.id.tab_layout);
+        final ViewPager viewPager = findViewById(R.id.view_pager);
+
+        reference = FirebaseDatabase.getInstance().getReference("Chats");
+        reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager());
+                int unread = 0;
+                for(DataSnapshot snapshot : dataSnapshot.getChildren()){
+                    Chat chat = snapshot.getValue(Chat.class);
+                    if(chat.getReceiver().equals(firebaseUser.getUid()) && !chat.isIsseen()){
+                        unread++;
+                    }
+                }
+                if(unread == 0){
+                    viewPagerAdapter.addFragment(new ChatsFragment(), "Chats");
+                } else{
+                    viewPagerAdapter.addFragment(new ChatsFragment(), "("+unread+") Chats");
+                }
+
+                //Add Chat and Users Fragments.
+                viewPagerAdapter.addFragment(new UsersFragment(), "Users");
+                viewPagerAdapter.addFragment(new ProfileFragment(), "Profile"); //Part.10 profile.
 
 
-        viewPager.setAdapter(viewPagerAdapter);
-        tabLayout.setupWithViewPager(viewPager);
+                viewPager.setAdapter(viewPagerAdapter);
+                tabLayout.setupWithViewPager(viewPager);
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+
         //***************************** Part.3 Tablayout end *****************************
     }
 
@@ -113,8 +142,8 @@ public class MainActivity extends AppCompatActivity {
         switch(item.getItemId()){
             case R.id.logout:
                 FirebaseAuth.getInstance().signOut();
-                startActivity(new Intent(MainActivity.this, StartActivity.class));
-                finish();
+                // change here or crash.
+                startActivity(new Intent(MainActivity.this, StartActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
                 return true;
         }
         return false;
@@ -151,5 +180,29 @@ public class MainActivity extends AppCompatActivity {
             return titles.get(position);
         }
     }
-    //***************************** Part.3 Tablayout end *****************************
+    //***************************** </Part.3 Tablayout end *****************************
+
+    //***************************** Part.12 Show user status *****************************
+    private void status(String status){
+        reference = FirebaseDatabase.getInstance().getReference("Users").child(firebaseUser.getUid());
+
+        HashMap<String, Object>hashMap = new HashMap<>();
+        hashMap.put("status", status);
+
+        reference.updateChildren(hashMap);
+
+    }
+
+    @Override
+    protected void onResume(){
+        super.onResume();
+        status("online");
+    }
+
+    @Override
+    protected void onPause(){
+        super.onPause();
+        status("offline");
+    }
+    //***************************** </Part.12 Show user status *****************************
 }
