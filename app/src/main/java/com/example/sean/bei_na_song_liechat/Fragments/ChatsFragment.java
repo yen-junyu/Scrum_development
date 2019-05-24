@@ -174,21 +174,8 @@ public class ChatsFragment extends Fragment {
                 //Display one user from chats
                 for(DataSnapshot snapshot:dataSnapshot.getChildren()){
                     User user = snapshot.getValue(User.class);
-
-                    for(String id:usersList){
-                        if(user.getId().equals(id)){
-                            if(mUsers.size() != 0 ){
-                                for(User user1: mUsers){
-                                    if(!user.getId().equals(user1.getId())){
-                                        mUsers.add(user);
-                                    }
-                                }
-                            }
-                            else{
-                                mUsers.add(user);
-                            }
-                        }
-                    }
+                    if(usersList.contains(user.getId()))
+                        mUsers.add(user);
                 }
 
                 userAdapter = new UsersAdapter(getContext(), mUsers, true);
