@@ -47,12 +47,12 @@ public class UsersFragment extends Fragment {
         //False: It will set the default parent layout for child layout.
         //True : Setting the outer layout(parent layout), when the view had been added into the parent view,then the outer layout's setting will become effective.
         View view = inflater.inflate(R.layout.fragment_users, container, false);
-        
+
         recyclerView = view.findViewById(R.id.recycler_view);
         recyclerView.setHasFixedSize(true);
         //Set recycleView's layout position.
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-    
+
         mUsers = new ArrayList<>();
         readUsers();
 
@@ -79,23 +79,24 @@ public class UsersFragment extends Fragment {
 
         return view;
     }
+
     //***************************** Part.13 Search users *****************************
     private void searchUsers(String s) {
         final FirebaseUser fuser = FirebaseAuth.getInstance().getCurrentUser();
         Query query = FirebaseDatabase.getInstance().getReference("Users").orderByChild("search")
                 .startAt(s)
-                .endAt(s+"\uf8ff");
+                .endAt(s + "\uf8ff");
 
         query.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 mUsers.clear();
-                for(DataSnapshot snapshot : dataSnapshot.getChildren()){
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     User user = snapshot.getValue(User.class);
 
                     assert user != null;
                     assert fuser != null;
-                    if(!user.getId().equals(fuser.getUid())){
+                    if (!user.getId().equals(fuser.getUid())) {
                         mUsers.add(user);
                     }
                 }
@@ -110,6 +111,7 @@ public class UsersFragment extends Fragment {
             }
         });
     }
+
     //***************************** </Part.13 Search users *****************************
     private void readUsers() {
 
@@ -119,18 +121,18 @@ public class UsersFragment extends Fragment {
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if(search_users.getText().toString().equals("")){
+                if (search_users.getText().toString().equals("")) {
                     mUsers.clear();
                     //Get the user info according database
                     //For loop iterative tracing.
-                    for(DataSnapshot snapshot: dataSnapshot.getChildren()){
+                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                         User user = snapshot.getValue(User.class);
 
                         assert user != null;
                         assert firebaseUser != null;
                         //If get the user id does not the current user id.
                         //Then push the user info. into ArrayList.
-                        if(!user.getId().equals(firebaseUser.getUid())){
+                        if (!user.getId().equals(firebaseUser.getUid())) {
                             mUsers.add(user);
                         }
                     }

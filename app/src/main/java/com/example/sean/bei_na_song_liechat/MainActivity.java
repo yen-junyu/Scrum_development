@@ -72,10 +72,9 @@ public class MainActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 User user = dataSnapshot.getValue(User.class);
                 username.setText(user.getUsername());
-                if(user.getImageURL().equals("default")) {
+                if (user.getImageURL().equals("default")) {
                     profile_image.setImageResource(R.mipmap.ic_launcher);
-                }
-                else{
+                } else {
                     Glide.with(getApplicationContext()).load(user.getImageURL()).into(profile_image);
                 }
             }
@@ -98,16 +97,16 @@ public class MainActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager());
                 int unread = 0;
-                for(DataSnapshot snapshot : dataSnapshot.getChildren()){
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     Chat chat = snapshot.getValue(Chat.class);
-                    if(chat.getReceiver().equals(firebaseUser.getUid()) && !chat.isIsseen()){
+                    if (chat.getReceiver().equals(firebaseUser.getUid()) && !chat.isIsseen()) {
                         unread++;
                     }
                 }
-                if(unread == 0){
+                if (unread == 0) {
                     viewPagerAdapter.addFragment(new ChatsFragment(), "Chats");
-                } else{
-                    viewPagerAdapter.addFragment(new ChatsFragment(), "("+unread+") Chats");
+                } else {
+                    viewPagerAdapter.addFragment(new ChatsFragment(), "(" + unread + ") Chats");
                 }
 
                 //Add Chat and Users Fragments.
@@ -139,7 +138,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch(item.getItemId()){
+        switch (item.getItemId()) {
             case R.id.logout:
                 FirebaseAuth.getInstance().signOut();
                 // change here or crash.
@@ -151,25 +150,25 @@ public class MainActivity extends AppCompatActivity {
     //***************************** Part.2 login & logout bar end *****************************
 
     //***************************** Part.3 Tablayout start *****************************
-    class ViewPagerAdapter extends FragmentPagerAdapter{
+    class ViewPagerAdapter extends FragmentPagerAdapter {
         private ArrayList<Fragment> fragments;
         private ArrayList<String> titles;
 
-        public ViewPagerAdapter(FragmentManager fm){
+        public ViewPagerAdapter(FragmentManager fm) {
             super(fm);
             this.fragments = new ArrayList<>();
             this.titles = new ArrayList<>();
         }
 
-        public Fragment getItem(int position){
+        public Fragment getItem(int position) {
             return fragments.get(position);
         }
 
-        public int getCount(){
+        public int getCount() {
             return fragments.size();
         }
 
-        public void addFragment(Fragment fragment, String title){
+        public void addFragment(Fragment fragment, String title) {
             fragments.add(fragment);
             titles.add(title);
         }
@@ -183,10 +182,10 @@ public class MainActivity extends AppCompatActivity {
     //***************************** </Part.3 Tablayout end *****************************
 
     //***************************** Part.12 Show user status *****************************
-    private void status(String status){
+    private void status(String status) {
         reference = FirebaseDatabase.getInstance().getReference("Users").child(firebaseUser.getUid());
 
-        HashMap<String, Object>hashMap = new HashMap<>();
+        HashMap<String, Object> hashMap = new HashMap<>();
         hashMap.put("status", status);
 
         reference.updateChildren(hashMap);
@@ -194,13 +193,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onResume(){
+    protected void onResume() {
         super.onResume();
         status("online");
     }
 
     @Override
-    protected void onPause(){
+    protected void onPause() {
         super.onPause();
         status("offline");
     }

@@ -1,4 +1,5 @@
 package com.example.sean.bei_na_song_liechat.Adapter;
+
 import com.example.sean.bei_na_song_liechat.Model.Chat;
 import com.example.sean.bei_na_song_liechat.R;
 
@@ -33,44 +34,44 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
 
     FirebaseUser fuser;
 
-    public MessageAdapter(Context mContext, List<Chat> mChat, String imageurl){
+    public MessageAdapter(Context mContext, List<Chat> mChat, String imageurl) {
         this.mContext = mContext;
         this.mChat = mChat;
         this.imageurl = imageurl;
     }
+
     @NonNull
     @Override
     public MessageAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
-        if(viewType == MSG_TYPE_RIGHT){
+        if (viewType == MSG_TYPE_RIGHT) {
             View view = LayoutInflater.from(mContext).inflate(R.layout.chat_item_right, parent, false);
             return new MessageAdapter.ViewHolder(view);
-        }
-        else{
+        } else {
             View view = LayoutInflater.from(mContext).inflate(R.layout.chat_item_left, parent, false);
             return new MessageAdapter.ViewHolder(view);
         }
     }
+
     @Override
     public void onBindViewHolder(@NonNull MessageAdapter.ViewHolder holder, int position) {
         Chat chat = mChat.get(position);
 
         holder.show_message.setText(chat.getMessage());
 
-        if(imageurl.equals("default")){
+        if (imageurl.equals("default")) {
             holder.profile_image.setImageResource(R.mipmap.ic_launcher);
-        }
-        else{
+        } else {
             Glide.with(mContext).load(imageurl).into(holder.profile_image);
         }
 
-        if(position == mChat.size()-1){
-            if(chat.isIsseen()){
+        if (position == mChat.size() - 1) {
+            if (chat.isIsseen()) {
                 holder.txt_seen.setText("Seen");
             } else {
                 holder.txt_seen.setText("Delivered");
             }
-        }else{
+        } else {
             holder.txt_seen.setVisibility(View.GONE);
         }
     }
@@ -99,10 +100,9 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
     @Override
     public int getItemViewType(int position) {
         fuser = FirebaseAuth.getInstance().getCurrentUser();
-        if(mChat.get(position).getSender().equals(fuser.getUid())){
+        if (mChat.get(position).getSender().equals(fuser.getUid())) {
             return MSG_TYPE_RIGHT;
-        }
-        else{
+        } else {
             return MSG_TYPE_LEFT;
         }
     }

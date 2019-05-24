@@ -15,7 +15,8 @@ public class Chat {
         this.isseen = isseen;
     }
 
-    public Chat() { }
+    public Chat() {
+    }
 
 
     public String getSender() {

@@ -16,7 +16,6 @@ public class StartActivity extends AppCompatActivity {
     FirebaseUser firebaseUser;
 
 
-
     @Override
     protected void onStart() {
         super.onStart();
@@ -25,7 +24,7 @@ public class StartActivity extends AppCompatActivity {
 
         //check if user is null.
         //If not then login automatically.
-        if(firebaseUser != null){
+        if (firebaseUser != null) {
             Intent intent = new Intent(StartActivity.this, MainActivity.class);
             startActivity(intent);
             finish();

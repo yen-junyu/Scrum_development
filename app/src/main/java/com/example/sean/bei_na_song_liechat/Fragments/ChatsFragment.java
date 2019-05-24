@@ -62,12 +62,12 @@ public class ChatsFragment extends Fragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 usersList.clear();
-                for(DataSnapshot snapshot : dataSnapshot.getChildren()){
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     Chat chat = snapshot.getValue(Chat.class);
-                    if(chat.getSender().equals(fuser.getUid())){
+                    if (chat.getSender().equals(fuser.getUid())) {
                         usersList.add(chat.getReceiver());
                     }
-                    if(chat.getReceiver().equals(fuser.getUid())){
+                    if (chat.getReceiver().equals(fuser.getUid())) {
                         usersList.add(chat.getSender());
                     }
                 }
@@ -154,15 +154,14 @@ public class ChatsFragment extends Fragment {
 //        });
 //    }
 
-    private void updateToken(String token){
+    private void updateToken(String token) {
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Tokens");
         Token token1 = new Token(token);
         reference.child(fuser.getUid()).setValue(token1);
     }
 
 
-
-    private void readChats(){
+    private void readChats() {
         mUsers = new ArrayList<>();
 
         reference = FirebaseDatabase.getInstance().getReference("Users");
@@ -172,9 +171,9 @@ public class ChatsFragment extends Fragment {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 mUsers.clear();
                 //Display one user from chats
-                for(DataSnapshot snapshot:dataSnapshot.getChildren()){
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     User user = snapshot.getValue(User.class);
-                    if(usersList.contains(user.getId()))
+                    if (usersList.contains(user.getId()))
                         mUsers.add(user);
                 }
 

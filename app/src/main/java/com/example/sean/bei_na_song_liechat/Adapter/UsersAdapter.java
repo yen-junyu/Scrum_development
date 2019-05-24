@@ -1,7 +1,9 @@
 package com.example.sean.bei_na_song_liechat.Adapter;
+
 import com.example.sean.bei_na_song_liechat.MessageActivity;
 import com.example.sean.bei_na_song_liechat.Model.Chat;
 import com.example.sean.bei_na_song_liechat.R;
+
 import android.content.Context;
 import android.content.Intent;
 import android.provider.ContactsContract;
@@ -37,7 +39,7 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.ViewHolder> 
     String theLastMessage;
 
 
-    public UsersAdapter(Context mContext, List<User> mUsers, boolean ischat){
+    public UsersAdapter(Context mContext, List<User> mUsers, boolean ischat) {
         this.mContext = mContext;
         this.mUsers = mUsers;
         this.ischat = ischat;
@@ -55,29 +57,28 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.ViewHolder> 
 
         final User user = mUsers.get(position);
         holder.username.setText(user.getUsername());
-        if(user.getImageURL().equals("default")){
+        if (user.getImageURL().equals("default")) {
             holder.profile_image.setImageResource(R.mipmap.ic_launcher);
-        }
-        else{
+        } else {
             Glide.with(mContext).load(user.getImageURL()).into(holder.profile_image);
         }
         //***************************** Part.17 Show last msg *****************************
-        if(ischat){
+        if (ischat) {
             lastMessage(user.getId(), holder.last_msg);
-        }else{
+        } else {
             holder.last_msg.setVisibility(View.GONE);
         }
         //***************************** </Part.17 Show last msg *****************************
         //***************************** Part.12 Show user status *****************************
-        if(ischat){
-                if(user.getStatus().equals("online")){
-                    holder.img_on.setVisibility(View.VISIBLE);
-                    holder.img_off.setVisibility(View.GONE);
-                }else{
-                    holder.img_on.setVisibility(View.GONE);
-                    holder.img_off.setVisibility(View.VISIBLE);
-                }
-        }else{
+        if (ischat) {
+            if (user.getStatus().equals("online")) {
+                holder.img_on.setVisibility(View.VISIBLE);
+                holder.img_off.setVisibility(View.GONE);
+            } else {
+                holder.img_on.setVisibility(View.GONE);
+                holder.img_off.setVisibility(View.VISIBLE);
+            }
+        } else {
             holder.img_on.setVisibility(View.GONE);
             holder.img_off.setVisibility(View.GONE);
         }
@@ -85,7 +86,7 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.ViewHolder> 
         //***************************** </Part.12 Show user status *****************************
 
         //***************************** Part.6 Create chat layout *****************************
-        holder.itemView.setOnClickListener(new View.OnClickListener(){
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(mContext, MessageActivity.class);
@@ -123,8 +124,9 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.ViewHolder> 
 
         }
     }
+
     //***************************** Part.17 Show last msg *****************************
-    private void lastMessage(final String userid, final TextView last_msg){
+    private void lastMessage(final String userid, final TextView last_msg) {
         theLastMessage = "default";
         final FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Chats");
@@ -132,15 +134,15 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.ViewHolder> 
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for(DataSnapshot snapshot : dataSnapshot.getChildren()){
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     Chat chat = snapshot.getValue(Chat.class);
-                    if(chat.getReceiver().equals(firebaseUser.getUid()) && chat.getSender().equals(userid) ||
-                            chat.getReceiver().equals(userid) && chat.getSender().equals(firebaseUser.getUid())){
+                    if (chat.getReceiver().equals(firebaseUser.getUid()) && chat.getSender().equals(userid) ||
+                            chat.getReceiver().equals(userid) && chat.getSender().equals(firebaseUser.getUid())) {
                         theLastMessage = chat.getMessage();
                     }
                 }
 
-                switch (theLastMessage){
+                switch (theLastMessage) {
                     case "default":
                         last_msg.setText("No message");
                         break;
