@@ -16,7 +16,8 @@ public class User {
         this.search = search;
     }
 
-    public User() {}
+    public User() {
+    }
 
     public String getId() {
         return id;

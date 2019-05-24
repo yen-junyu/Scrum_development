@@ -51,7 +51,7 @@ public class ProfileFragment extends Fragment {
 
     //***************************** Part.11 upload file *****************************
     StorageReference storageReference;
-    private static final int IMAGE_REQUEST  =1;
+    private static final int IMAGE_REQUEST = 1;
     private Uri imageUri;
     private StorageTask uploadTask;
     //***************************** </Part.11 upload file *****************************
@@ -76,10 +76,9 @@ public class ProfileFragment extends Fragment {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 User user = dataSnapshot.getValue(User.class);
                 username.setText(user.getUsername());
-                if(user.getImageURL().equals("default")){
+                if (user.getImageURL().equals("default")) {
                     image_profile.setImageResource(R.mipmap.ic_launcher);
-                }
-                else{
+                } else {
                     Glide.with(getContext()).load(user.getImageURL()).into(image_profile);
                 }
             }
@@ -95,7 +94,7 @@ public class ProfileFragment extends Fragment {
             public void onClick(View view) {
                 openImage();
             }
-        //***************************** </Part.11 upload file *****************************
+            //***************************** </Part.11 upload file *****************************
         });
         return view;
 
@@ -109,27 +108,27 @@ public class ProfileFragment extends Fragment {
         startActivityForResult(intent, IMAGE_REQUEST);
     }
 
-    private String getFileExtension(Uri uri){
+    private String getFileExtension(Uri uri) {
         ContentResolver contentResolver = getContext().getContentResolver();
-        MimeTypeMap mimeTypeMap  =MimeTypeMap.getSingleton();
+        MimeTypeMap mimeTypeMap = MimeTypeMap.getSingleton();
         return mimeTypeMap.getExtensionFromMimeType(contentResolver.getType(uri));
 
     }
 
-    private void uploadImage(){
+    private void uploadImage() {
         final ProgressDialog pd = new ProgressDialog(getContext());
         pd.setMessage("Uploading");
         pd.show();
 
-        if(imageUri != null){
+        if (imageUri != null) {
             final StorageReference fileReference = storageReference.child(System.currentTimeMillis()
-            +"."+getFileExtension(imageUri));
+                    + "." + getFileExtension(imageUri));
 
             uploadTask = fileReference.putFile(imageUri);
             uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
                 @Override
                 public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
-                    if( !task.isSuccessful()){
+                    if (!task.isSuccessful()) {
                         throw task.getException();
                     }
 
@@ -138,7 +137,7 @@ public class ProfileFragment extends Fragment {
             }).addOnCompleteListener(new OnCompleteListener<Uri>() {
                 @Override
                 public void onComplete(@NonNull Task<Uri> task) {
-                    if(task.isSuccessful()){
+                    if (task.isSuccessful()) {
                         Uri downloadUri = task.getResult();
                         String mUri = downloadUri.toString();
 
@@ -148,7 +147,7 @@ public class ProfileFragment extends Fragment {
                         reference.updateChildren(map);
 
                         pd.dismiss();
-                    } else{
+                    } else {
                         Toast.makeText(getContext(), "Failed!", Toast.LENGTH_SHORT).show();
                         pd.dismiss();
                     }
@@ -164,17 +163,18 @@ public class ProfileFragment extends Fragment {
             Toast.makeText(getContext(), "No image selected", Toast.LENGTH_SHORT).show();
         }
     }
+
     @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data){
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if(requestCode == IMAGE_REQUEST && resultCode == RESULT_OK
-                && data != null && data.getData() != null){
+        if (requestCode == IMAGE_REQUEST && resultCode == RESULT_OK
+                && data != null && data.getData() != null) {
             imageUri = data.getData();
 
-            if(uploadTask != null && uploadTask.isInProgress()){
+            if (uploadTask != null && uploadTask.isInProgress()) {
                 Toast.makeText(getContext(), "Upload in progress", Toast.LENGTH_SHORT).show();
-            }else{
+            } else {
                 uploadImage();
             }
 

@@ -42,16 +42,16 @@ public class ResetPasswordActivity extends AppCompatActivity {
             public void onClick(View view) {
                 String email = send_email.getText().toString();
 
-                if(email.equals("")){
+                if (email.equals("")) {
                     Toast.makeText(ResetPasswordActivity.this, "All fields are required!", Toast.LENGTH_SHORT).show();
-                } else{
+                } else {
                     firebaseAuth.sendPasswordResetEmail(email).addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
-                            if(task.isSuccessful()){
+                            if (task.isSuccessful()) {
                                 Toast.makeText(ResetPasswordActivity.this, "Please check your Email", Toast.LENGTH_SHORT).show();
                                 startActivity(new Intent(ResetPasswordActivity.this, LoginActivity.class));
-                            }else{
+                            } else {
                                 String error = task.getException().getMessage();
                                 Toast.makeText(ResetPasswordActivity.this, error, Toast.LENGTH_SHORT).show();
                             }
