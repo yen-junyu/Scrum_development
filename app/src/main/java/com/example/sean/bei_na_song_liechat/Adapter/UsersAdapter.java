@@ -2,11 +2,11 @@ package com.example.sean.bei_na_song_liechat.Adapter;
 
 import com.example.sean.bei_na_song_liechat.MessageActivity;
 import com.example.sean.bei_na_song_liechat.Model.Chat;
+import com.example.sean.bei_na_song_liechat.Model.ChatMessage;
 import com.example.sean.bei_na_song_liechat.R;
 
 import android.content.Context;
 import android.content.Intent;
-import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -36,7 +36,7 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.ViewHolder> 
     private Context mContext;
     private List<User> mUsers;
     private boolean ischat;
-    String theLastMessage;
+    ChatMessage theLastMessage;
 
 
     public UsersAdapter(Context mContext, List<User> mUsers, boolean ischat) {
@@ -127,7 +127,7 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.ViewHolder> 
 
     //***************************** Part.17 Show last msg *****************************
     private void lastMessage(final String userid, final TextView last_msg) {
-        theLastMessage = "default";
+        theLastMessage = new ChatMessage();
         final FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Chats");
 
@@ -142,16 +142,19 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.ViewHolder> 
                     }
                 }
 
-                switch (theLastMessage) {
-                    case "default":
-                        last_msg.setText("No message");
+                switch (theLastMessage.checkMessageType()) {
+                    case "Image":
+                        last_msg.setText("Send a sticker");
+                        break;
+                    case "Text":
+                        last_msg.setText(theLastMessage.getTextMessage());
                         break;
                     default:
-                        last_msg.setText(theLastMessage);
+                        last_msg.setText("No message");
                         break;
                 }
 
-                theLastMessage = "default";
+                theLastMessage = new ChatMessage();
             }
 
             @Override

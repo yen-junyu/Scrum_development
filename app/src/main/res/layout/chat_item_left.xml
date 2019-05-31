@@ -11,22 +11,36 @@
         android:id="@+id/profile_image"
         android:src="@mipmap/ic_launcher"/>
 
-    <TextView
+    <RelativeLayout
+        android:layout_toRightOf="@id/profile_image"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_toRightOf="@id/profile_image"
-        android:layout_marginLeft="5dp"
-        android:text="hello"
-        android:id="@+id/show_message"
-        android:textSize="18sp"
-        android:padding="8dp"
-        android:background="@drawable/background_left"/>
+        android:id="@+id/message_container">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:text="hello"
+            android:id="@+id/show_message"
+            android:textSize="18sp"
+            android:padding="8dp"
+            android:background="@drawable/background_left"/>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:id="@+id/show_image"
+            android:padding="8dp"
+            android:layout_alignLeft="@id/show_message"
+            android:layout_alignTop="@id/show_message"/>
+    </RelativeLayout>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/txt_seen"
         android:visibility="gone"
-        android:layout_below="@id/show_message"/>
+        android:layout_below="@id/message_container"/>
 
 </RelativeLayout>

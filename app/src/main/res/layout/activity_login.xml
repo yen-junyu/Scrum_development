@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/catmain"
     tools:context=".LoginActivity">
 
     <include
@@ -21,7 +22,9 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="170dp"
             android:text="Login"
+            android:textColor="#ffffff"
             android:textSize="20sp"
             android:textStyle="bold" />
 
@@ -30,7 +33,12 @@
             android:layout_height="wrap_content"
             android:id="@+id/email"
             android:inputType="textEmailAddress"
-            android:layout_marginTop="10dp"
+            android:textColor="#ffffff"
+            android:backgroundTint="#FFFFFF"
+            android:layout_marginTop="100dp"
+            app:met_baseColor="#FFFFFF"
+            app:met_primaryColor="#FFFFFF"
+            app:met_textColorHint="#AAAAAA"
             app:met_floatingLabel="normal"
             android:hint="Email"/>
 
@@ -39,7 +47,11 @@
             android:layout_height="wrap_content"
             android:id="@+id/password"
             android:inputType="textPassword"
+            android:textColor="#ffffff"
             android:layout_marginTop="10dp"
+            app:met_baseColor="#FFFFFF"
+            app:met_primaryColor="#FFFFFF"
+            app:met_textColorHint="#AAAAAA"
             app:met_floatingLabel="normal"
             android:hint="Password"/>
 
@@ -48,7 +60,7 @@
             android:layout_height="wrap_content"
             android:text="Login"
             android:id="@+id/btn_login"
-            android:background="@color/colorPrimaryDark"
+            android:background="@drawable/button"
             android:layout_marginTop="10dp"
             android:textColor="#fff"/>
 
@@ -61,6 +73,6 @@
             android:layout_gravity="end"
             android:textStyle="bold"
             android:id="@+id/forgot_password"
-            android:textColor="@color/colorPrimaryDark"/>
+            android:textColor="#FFFFFF"/>
     </LinearLayout>
 </RelativeLayout>

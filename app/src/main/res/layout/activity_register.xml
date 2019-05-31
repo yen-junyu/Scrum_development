@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/catmain"
     tools:context=".RegisterActivity">
 
     <include
@@ -21,7 +22,9 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Create a ne account"
+            android:text="Create a new account"
+            android:layout_marginTop="170dp"
+            android:textColor="#ffffff"
             android:textSize="20sp"
             android:textStyle="bold" />
 
@@ -31,6 +34,9 @@
             android:id="@+id/username"
             android:layout_marginTop="10dp"
             app:met_floatingLabel="normal"
+            app:met_baseColor="#FFFFFF"
+            app:met_primaryColor="#FFFFFF"
+            app:met_textColorHint="#AAAAAA"
             android:hint="Username"/>
 
         <com.rengwuxian.materialedittext.MaterialEditText
@@ -39,6 +45,9 @@
             android:id="@+id/email"
             android:inputType="textEmailAddress"
             android:layout_marginTop="10dp"
+            app:met_baseColor="#FFFFFF"
+            app:met_primaryColor="#FFFFFF"
+            app:met_textColorHint="#AAAAAA"
             app:met_floatingLabel="normal"
             android:hint="Email"/>
 
@@ -47,6 +56,9 @@
             android:layout_height="wrap_content"
             android:id="@+id/password"
             android:inputType="textPassword"
+            app:met_baseColor="#FFFFFF"
+            app:met_primaryColor="#FFFFFF"
+            app:met_textColorHint="#AAAAAA"
             android:layout_marginTop="10dp"
             app:met_floatingLabel="normal"
             android:hint="Password"/>
@@ -56,7 +68,7 @@
             android:layout_height="wrap_content"
             android:text="register"
             android:id="@+id/btn_register"
-            android:background="@color/colorPrimaryDark"
+            android:background="@drawable/button"
             android:layout_marginTop="10dp"
             android:textColor="#fff"/>
 

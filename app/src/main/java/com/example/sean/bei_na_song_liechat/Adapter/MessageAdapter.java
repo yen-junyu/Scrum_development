@@ -1,6 +1,7 @@
 package com.example.sean.bei_na_song_liechat.Adapter;
 
 import com.example.sean.bei_na_song_liechat.Model.Chat;
+import com.example.sean.bei_na_song_liechat.Model.ChatMessage;
 import com.example.sean.bei_na_song_liechat.R;
 
 
@@ -57,7 +58,17 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
     public void onBindViewHolder(@NonNull MessageAdapter.ViewHolder holder, int position) {
         Chat chat = mChat.get(position);
 
-        holder.show_message.setText(chat.getMessage());
+        ChatMessage message = chat.getMessage();
+        switch (message.checkMessageType()){
+            case "Image":
+                holder.show_image.setImageResource(message.getImageMessage());
+                holder.show_message.setVisibility(View.GONE);
+                break;
+            case "Text":
+                holder.show_message.setText(message.getTextMessage());
+                holder.show_image.setVisibility(View.GONE);
+                break;
+        }
 
         if (imageurl.equals("default")) {
             holder.profile_image.setImageResource(R.mipmap.ic_launcher);
@@ -65,7 +76,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
             Glide.with(mContext).load(imageurl).into(holder.profile_image);
         }
 
-        if (position == mChat.size() - 1) {
+        if (position == mChat.size()-1) {
             if (chat.isIsseen()) {
                 holder.txt_seen.setText("Seen");
             } else {
@@ -85,13 +96,14 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
     //Construct the user item .
     public class ViewHolder extends RecyclerView.ViewHolder {
         public TextView show_message;
+        public ImageView show_image;
         public ImageView profile_image;
         public TextView txt_seen;
 
         public ViewHolder(View itemView) {
             super(itemView);
-
             show_message = itemView.findViewById(R.id.show_message);
+            show_image = itemView.findViewById(R.id.show_image);
             profile_image = itemView.findViewById(R.id.profile_image);
             txt_seen = itemView.findViewById(R.id.txt_seen);
         }

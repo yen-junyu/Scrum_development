@@ -5,10 +5,10 @@ public class Chat {
 
     private String sender;
     private String receiver;
-    private String message;
+    private ChatMessage message;
     private boolean isseen;
 
-    public Chat(String sender, String receiver, String message, boolean isseen) {
+    public Chat(String sender, String receiver, ChatMessage message, boolean isseen) {
         this.sender = sender;
         this.receiver = receiver;
         this.message = message;
@@ -35,11 +35,11 @@ public class Chat {
         this.receiver = receiver;
     }
 
-    public String getMessage() {
+    public ChatMessage getMessage() {
         return message;
     }
 
-    public void setMessage(String message) {
+    public void setMessage(ChatMessage message) {
         this.message = message;
     }
 

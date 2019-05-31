@@ -4,22 +4,29 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Message;
 import android.support.annotation.NonNull;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.sean.bei_na_song_liechat.Adapter.MessageAdapter;
+import com.example.sean.bei_na_song_liechat.Adapter.StickerAdapter;
 import com.example.sean.bei_na_song_liechat.Fragments.APIService;
 import com.example.sean.bei_na_song_liechat.Model.Chat;
+import com.example.sean.bei_na_song_liechat.Model.ChatMessage;
 import com.example.sean.bei_na_song_liechat.Model.User;
 import com.example.sean.bei_na_song_liechat.Notification.Client;
 import com.example.sean.bei_na_song_liechat.Notification.Data;
@@ -64,6 +71,7 @@ public class MessageActivity extends AppCompatActivity {
 
     //***************************** Part.7 Get message at firebase *****************************
     ImageButton btn_send;
+    ImageButton btn_pic;
     EditText text_send;
     //***************************** </Part.7 Get message at firebase *****************************
 
@@ -75,6 +83,8 @@ public class MessageActivity extends AppCompatActivity {
     APIService apiService;
     boolean notify = false;
 
+    //***************************** Part.XXXXXXX*****************************
+    private int[] imagesId={R.drawable.weird,R.drawable.a,R.drawable.b,R.drawable.c,R.drawable.d,R.drawable.e,R.drawable.f,R.drawable.g,R.drawable.h};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -107,6 +117,7 @@ public class MessageActivity extends AppCompatActivity {
         profile_image = findViewById(R.id.profile_image);
         username = findViewById(R.id.username);
         btn_send = findViewById(R.id.btn_send);
+        btn_pic = findViewById(R.id.btn_pic);
         text_send = findViewById(R.id.text_send);
 
         intent = getIntent();
@@ -118,13 +129,19 @@ public class MessageActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 notify = true;
-                String msg = text_send.getText().toString();
-                if (!msg.equals("")) {
+                ChatMessage msg = new ChatMessage(text_send.getText().toString(),null);
+                if (!msg.getTextMessage().equals("")) {
                     sendMessage(fuser.getUid(), userid, msg);
                 } else {
                     Toast.makeText(MessageActivity.this, "You can't send empty message", Toast.LENGTH_SHORT).show();
                 }
                 text_send.setText("");
+            }
+        });
+        btn_pic.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showAlertDialog();
             }
         });
         //***************************** </Part.7 Get message at firebase *****************************
@@ -183,7 +200,7 @@ public class MessageActivity extends AppCompatActivity {
 
 
     //***************************** Part.7 Get message at firebase *****************************
-    private void sendMessage(String sender, final String receiver, String message) {
+    private void sendMessage(String sender, final String receiver, ChatMessage message) {
 
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
 
@@ -195,7 +212,7 @@ public class MessageActivity extends AppCompatActivity {
 
         reference.child("Chats").push().setValue(hashMap);
 
-        final String msg = message;
+        final ChatMessage msg = message;
 
         reference = FirebaseDatabase.getInstance().getReference("Users").child(fuser.getUid());
         reference.addValueEventListener(new ValueEventListener() {
@@ -229,8 +246,34 @@ public class MessageActivity extends AppCompatActivity {
 //            }
 //        });
     }
+    private void showAlertDialog() {
+        // Prepare grid view
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        final AlertDialog dialog;
+        final GridView gridView = new GridView(this);
+        ArrayList<Integer> items = new ArrayList<>();
+        for (int i = 0; i < 9; i++) {
+            items.add(imagesId[i]);
+        }
 
-    private void sendNotification(final String receiver, final String username, final String message) {
+       // SimpleAdapter adapter=new SimpleAdapter(this,mList,android.R.layout.simple_list_item_1,new int[]{R.id.image});
+        gridView.setAdapter(new StickerAdapter(this, items));
+        gridView.setNumColumns(3);
+        // Set grid view to alertDialog
+        builder.setView(gridView);
+        builder.setTitle("STICKER");
+        dialog = builder.show();
+        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Integer imgID = (Integer) ((StickerAdapter)gridView.getAdapter()).getItem(position);
+                dialog.dismiss();
+                ChatMessage msg = new ChatMessage(null,imgID);
+                sendMessage(fuser.getUid(), userid, msg);
+            }
+        });
+    }
+    private void sendNotification(final String receiver, final String username, final ChatMessage message) {
         DatabaseReference tokens = FirebaseDatabase.getInstance().getReference("Tokens");
         Query query = tokens.orderByKey().equalTo(receiver);
         query.addValueEventListener(new ValueEventListener() {
@@ -273,7 +316,6 @@ public class MessageActivity extends AppCompatActivity {
     //***************************** Part.8 Display message *****************************
     private void readMessages(final String myid, final String userid, final String imageurl) {
         mchat = new ArrayList<>();
-
         reference = FirebaseDatabase.getInstance().getReference("Chats");
         reference.addValueEventListener(new ValueEventListener() {
             @Override
@@ -285,7 +327,6 @@ public class MessageActivity extends AppCompatActivity {
                             chat.getReceiver().equals(userid) && chat.getSender().equals(myid)) {
                         mchat.add(chat);
                     }
-
                     messageAdapter = new MessageAdapter(MessageActivity.this, mchat, imageurl);
                     recyclerView.setAdapter(messageAdapter);
                 }
