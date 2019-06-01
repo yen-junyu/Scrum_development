@@ -169,8 +169,6 @@ public class MessageActivity extends AppCompatActivity {
 
             }
         });
-
-
         seenMessage(userid);
     }
 
