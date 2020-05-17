@@ -30,8 +30,6 @@
 ![](https://i.imgur.com/ChYJcxg.png)
 
 
-![](https://i.imgur.com/ivMyiyt.png =500x350)
-
 ## 實際展示
 
 ![](https://i.imgur.com/XWxnSxQ.png)
