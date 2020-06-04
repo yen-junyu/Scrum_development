@@ -85,6 +85,7 @@ public class MessageActivity extends AppCompatActivity {
 
     //***************************** Part.XXXXXXX*****************************
     private int[] imagesId={R.drawable.weird,R.drawable.a,R.drawable.b,R.drawable.c,R.drawable.d,R.drawable.e,R.drawable.f,R.drawable.g,R.drawable.h};
+    private int[] like={R.drawable.pawprint};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -142,6 +143,16 @@ public class MessageActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 showAlertDialog();
+            }
+        });
+        btn_pic.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                //Integer imgID ;//= (Integer); //((StickerAdapter)gridView.getAdapter()).getItem(position);
+                Integer imgID =like[0];
+                ChatMessage msg = new ChatMessage(null,imgID);
+                sendMessage(fuser.getUid(), userid, msg);
+                return true;
             }
         });
         //***************************** </Part.7 Get message at firebase *****************************
